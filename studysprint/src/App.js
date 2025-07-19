@@ -11,6 +11,8 @@ import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import UserProfile from './components/UserProfile';
 import EditProfile from './components/EditProfile';
+import VideoCall from './components/VideoCall';
+import GroupChat from './components/GroupChat'; // 1. Import the new component
 import './App.css'; 
 
 function App() {
@@ -29,18 +31,18 @@ function App() {
         if (userDoc.exists()) {
           setUserProfile(userDoc.data());
         } else {
-          setUserProfile(null); // No profile exists yet
+          setUserProfile(null); 
         }
       } else {
         setUser(null);
         setUserProfile(null);
-        navigate('/'); // Redirect to landing page on logout
+        navigate('/'); 
       }
       setLoading(false);
     });
     return () => unsubscribe();
   }, [navigate]);
-
+  
   const handleProfileCreated = async () => {
     const user = auth.currentUser;
     const userDocRef = doc(db, 'users', user.uid);
@@ -49,10 +51,9 @@ function App() {
       setUserProfile(userDoc.data());
     }
   };
-
+  
   if (loading) return <div className="loading-screen"><h1>Loading...</h1></div>;
 
-  // If the user is NOT logged in, show the public-facing pages.
   if (!user) {
     switch (authView) {
       case 'login': return <Auth isLoginView={true} onGoBack={() => setAuthView('landing')} />;
@@ -60,13 +61,11 @@ function App() {
       default: return <Landing onGoToLogin={() => setAuthView('login')} onGoToSignup={() => setAuthView('signup')} />;
     }
   }
-
-  // If the user IS logged in but has no profile, show the profile creation page.
+  
   if (!userProfile) {
     return <Profile onProfileCreate={handleProfileCreated} />;
   }
 
-  // If the user IS logged in AND has a profile, show the main app with the global header.
   return (
     <>
       <Header userProfile={userProfile} />
@@ -75,6 +74,9 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/settings" element={<EditProfile />} />
+          <Route path="/group/:groupId/call" element={<VideoCall />} />
+          {/* 2. Add the route for the chat page */}
+          <Route path="/group/:groupId/chat" element={<GroupChat />} />
         </Routes>
       </main>
     </>

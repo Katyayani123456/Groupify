@@ -374,3 +374,169 @@ input, select, textarea {
   width: 120px;
   margin-top: 10px;
 }
+/* --- Video Call Styles --- */
+.video-call-container {
+  width: 100%;
+  height: calc(100vh - 70px); /* Full height minus header */
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+}
+
+.video-player-grid {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.video-controls {
+  padding: 1rem;
+  text-align: center;
+  background-color: #1a1a1a;
+}
+/* --- Updated Video Call Styles --- */
+.join-call-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.join-call-screen .form-button {
+  width: auto;
+  padding: 15px 30px;
+}
+
+.video-player {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.video-label {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+/* --- Modal Styles --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #1a1a1a;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #333;
+  max-width: 400px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  width: auto;
+}
+/* --- Chat Page Styles --- */
+.chat-container {
+  width: 100%;
+  height: calc(100vh - 70px); /* Full height minus header */
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+}
+.chat-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-header h3 {
+  margin: 0;
+}
+.messages-area {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.message {
+  display: flex;
+  max-width: 70%;
+  width: fit-content;
+}
+.message.sent {
+  align-self: flex-end;
+}
+.message.received {
+  align-self: flex-start;
+}
+.message-bubble {
+  padding: 10px 15px;
+  border-radius: 20px;
+  position: relative;
+}
+.message.sent .message-bubble {
+  background-color: #C739F3;
+  color: #0D0D0D;
+}
+.message.received .message-bubble {
+  background-color: #333;
+}
+.message-bubble .author-name {
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #aaa;
+}
+.message.sent .author-name {
+  color: #2c003e;
+}
+.message-bubble p {
+  margin: 0;
+  word-wrap: break-word;
+}
+.send-message-form {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #333;
+}
+.send-message-form input {
+  flex-grow: 1;
+  margin: 0;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+.send-message-form button {
+  margin: 0;
+  border-radius: 0 4px 4px 0;
+  width: auto;
+}

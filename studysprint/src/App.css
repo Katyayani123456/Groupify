@@ -1,48 +1,77 @@
-/* Import the font from Google Fonts */
+/* --- Global Styles & Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: 'Chakra Petch', sans-serif;
   background-color: #0D0D0D;
   color: #E0E0E0;
   margin: 0;
-  overflow: hidden; /* Hide scrollbars */
 }
 
 .App {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100vw;
-  position: relative;
+  width: 100%;
 }
 
-/* The glowing aurora effect */
-.App::before {
+/* --- Landing Page & Hero Section Styles --- */
+.landing-page-container {
+  width: 100%;
+}
+
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 5%;
+  background-color: rgba(13, 13, 13, 0.8);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90%;
+  z-index: 100;
+}
+
+.landing-header .header-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.landing-header nav a {
+  color: #E0E0E0;
+  text-decoration: none;
+  margin-left: 30px;
+  transition: color 0.3s;
+}
+
+.landing-header nav a:hover {
+  color: #C739F3;
+}
+
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 10%;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: 70%;
+  left: 75%;
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
   background: radial-gradient(circle, rgba(199, 57, 243, 0.4) 0%, rgba(199, 57, 243, 0) 60%);
   filter: blur(100px);
-  z-index: 1;
-}
-
-/* All content will be above the glow */
-.landing-container, .auth-page-container, .profile-container, .dashboard-container {
-  z-index: 2;
-  position: relative;
-}
-
-/* --- Landing Page Styles --- */
-.landing-container {
-  text-align: left;
-  padding: 40px;
-  max-width: 500px;
 }
 
 .logo-section {
@@ -59,13 +88,13 @@ body {
   transform: rotate(45deg);
 }
 
-.landing-container h1 {
+.hero-section h1 {
   font-size: 4rem;
   letter-spacing: 4px;
   margin: 0;
 }
 
-.landing-container p {
+.hero-section p {
   font-size: 1rem;
   letter-spacing: 2px;
   margin-bottom: 40px;
@@ -97,35 +126,77 @@ body {
   color: #0D0D0D;
 }
 
-/* --- Auth Page Styles --- */
+.landing-section {
+  padding: 100px 10%;
+  min-height: 50vh;
+  border-top: 1px solid #333;
+}
+
+.landing-section h2 {
+  font-size: 2.5rem;
+  color: #C739F3;
+}
+
+.landing-section a {
+    color: #C739F3;
+}
+
+/* --- General Authenticated App Styles --- */
+.main-header {
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+  padding: 0 5%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90%;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 70px;
+}
+
+.header-logo {
+  text-decoration: none;
+  color: #E0E0E0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.main-content {
+  padding: 100px 5% 40px 5%; /* Top padding for fixed header */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- Reusable Components Styles --- */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 .auth-page-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.back-button {
-    background: none;
-    border: none;
-    color: #E0E0E0;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-bottom: 20px;
-}
-
-.auth-container {
-    background: rgba(26, 26, 26, 0.8);
-    border: 1px solid #333;
-    padding: 40px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.auth-container h2 {
-    letter-spacing: 2px;
-}
-
-input {
+input, select, textarea {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
@@ -135,6 +206,14 @@ input {
   color: #E0E0E0;
   box-sizing: border-box;
   font-family: 'Chakra Petch', sans-serif;
+}
+
+.profile-container label {
+    display: block;
+    text-align: left;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #aaa;
 }
 
 .form-button {
@@ -148,110 +227,150 @@ input {
   width: 100%;
   font-size: 1rem;
   font-weight: bold;
-  letter-spacing: 1px;
-  transition: background-color 0.3s;
 }
 
-.form-button:hover {
-  background-color: #a62fcc;
+.back-button {
+    background: none;
+    border: none;
+    color: #E0E0E0;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 10px 0;
 }
 
-/* --- Styles for Profile, Dashboard (add or modify as needed) --- */
-.profile-container, .dashboard-container {
-    width: 100%;
-    max-width: 800px;
+.logout-button, .my-profile-button {
+    background-color: #C739F3;
+    color: #0D0D0D;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.9rem;
+}
+
+.my-profile-button {
+  background: none;
+  border: 1px solid #C739F3;
+  color: #C739F3;
+}
+
+/* --- Component-Specific Styles --- */
+.dashboard-container, .profile-container, .profile-view-container {
     background: rgba(26, 26, 26, 0.8);
     border: 1px solid #333;
     border-radius: 8px;
     padding: 40px;
 }
 
-.dashboard-header {
-  border-bottom: 1px solid #333;
+.search-container {
+  margin-bottom: 30px;
+}
+
+.user-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
 .user-card {
-  border: 1px solid #333;
-  background-color: #1A1A1A;
+    border: 1px solid #333;
+    background-color: #1A1A1A;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 .user-card h4 {
   color: #C739F3;
 }
 
-.logout-button {
-  background-color: #C739F3;
-  color: #0D0D0D;
-  font-weight: bold;
-}
-
-.loading-screen {
-    text-align: center;
-}
-/* --- New Profile & Dashboard Styles --- */
-
-/* Style for the dropdown in the profile form */
-select {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  background: #1A1A1A;
-  border: 1px solid #333;
-  border-radius: 4px;
-  color: #E0E0E0;
-  box-sizing: border-box;
-  font-family: 'Chakra Petch', sans-serif;
-  cursor: pointer;
-}
-
-/* Style for the label above the dropdown */
-.profile-container label {
-    display: block;
-    text-align: left;
-    margin-top: 15px;
-    font-size: 0.9rem;
-    color: #aaa;
-}
-
-/* Styles for the dashboard search bar */
-.search-container {
-  margin: 20px 0 30px 0;
-}
-
-.search-container input {
-  width: 100%;
-  padding: 15px;
-  font-size: 1rem;
-  background-color: #1f1f1f;
-  border: 1px solid #444;
-}
-
-/* Styles for the clickable user cards */
-.user-card-link {
-  text-decoration: none; /* Removes underline from links */
-  color: inherit;
-  display: block;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.user-card-link:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(199, 57, 243, 0.2);
-}
-
-/* Make the dashboard scrollable if content overflows */
-.dashboard-container {
-    max-height: 85vh;
-    overflow-y: auto;
-}
-
-/* Tweak user card for better layout */
-.user-card {
-    padding: 20px;
-}
-
 .user-card p {
     margin: 8px 0;
     line-height: 1.5;
     word-break: break-word;
+}
+
+.sessions-list {
+  margin-bottom: 30px;
+}
+
+.session-item {
+  background-color: #1f1f1f;
+  border: 1px solid #444;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-item p {
+  margin: 5px 0 0 0;
+  color: #aaa;
+}
+
+.delete-button, .add-button {
+  background-color: #d9534f;
+  color: white;
+  width: auto;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-session-form {
+  border-top: 1px solid #444;
+  padding-top: 20px;
+}
+
+.add-button {
+  background-color: #007bff;
+  width: 100%;
+}
+
+.profile-section {
+  margin-top: 30px;
+  border-top: 1px solid #333;
+  padding-top: 30px;
+}
+
+.subjects-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+/* --- Pomodoro Timer Styles --- */
+.pomodoro-container {
+  background-color: #1f1f1f;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin: 40px 0;
+  border: 1px solid #333;
+}
+.pomodoro-container h4 {
+    margin: 0 0 10px 0;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+.timer-display {
+  font-size: 3.5rem;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #C739F3;
+}
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+.timer-controls button {
+  width: 120px;
+  margin-top: 10px;
 }

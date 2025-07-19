@@ -1,78 +1,72 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
 
 const Dashboard = () => {
-  const [users, setUsers] = useState([]);
+  const [allSessions, setAllSessions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(''); // State for the search term
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchAllSessions = async () => {
       const usersCollection = collection(db, 'users');
       const userSnapshot = await getDocs(usersCollection);
-      const userList = userSnapshot.docs
-        .map(doc => doc.data())
-        .filter(user => user.uid !== auth.currentUser.uid); // Exclude current user
-      setUsers(userList);
+      let sessions = [];
+      const currentUserId = auth.currentUser ? auth.currentUser.uid : null;
+
+      userSnapshot.forEach(doc => {
+        const userData = doc.data();
+        if (userData.uid !== currentUserId && userData.studySessions) {
+          userData.studySessions.forEach(session => {
+            sessions.push({ ...session, userName: userData.name, userEmail: userData.email, userId: userData.uid });
+          });
+        }
+      });
+      setAllSessions(sessions);
       setLoading(false);
     };
-
-    fetchUsers();
+    fetchAllSessions();
   }, []);
 
-  const handleLogout = () => {
-    signOut(auth);
-  };
-
-  // Filter users based on the search term
-  const filteredUsers = users.filter(user => {
+  const filteredSessions = allSessions.filter(session => {
     const term = searchTerm.toLowerCase();
     return (
-      user.name.toLowerCase().includes(term) ||
-      user.major.toLowerCase().includes(term) ||
-      user.subjects.some(subject => subject.toLowerCase().includes(term))
+      session.title.toLowerCase().includes(term) ||
+      session.goal.toLowerCase().includes(term) ||
+      session.userName.toLowerCase().includes(term)
     );
   });
 
-  if (loading) {
-    return <div className="loading-screen"><h1>Loading study partners...</h1></div>;
-  }
+  if (loading) return <div className="loading-screen"><h1>Loading study sessions...</h1></div>;
 
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>Partner Finder</h1>
-        <button onClick={handleLogout} className="logout-button">Logout</button>
-      </header>
+      <h2>Find a Partner</h2>
 
-      {/* Search Bar */}
       <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search by name, major, or subject..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <input type="text" placeholder="Search for a session (e.g., Physics, Midterm Prep...)" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
-
       <div className="user-cards-container">
-        {filteredUsers.length > 0 ? (
-          filteredUsers.map((user) => (
-            // Each card is now a clickable link
-            <Link to={`/user/${user.uid}`} key={user.uid} className="user-card-link">
-              <div className="user-card">
-                <h4>{user.name}</h4>
-                <p><strong>Major:</strong> {user.major}</p>
-                <p><strong>Subjects:</strong> {user.subjects.join(', ')}</p>
-                <p><strong>Availability:</strong> {user.availability}</p>
-              </div>
-            </Link>
+        {filteredSessions.length > 0 ? (
+          filteredSessions.map((session) => (
+            <div key={session.id} className="user-card">
+              <h4>{session.title}</h4>
+              <p><strong>Goal:</strong> {session.goal}</p>
+              <p><strong>Availability:</strong> {session.availability}</p>
+              <p>Hosted by: <Link to={`/user/${session.userId}`}>{session.userName}</Link></p>
+              {/* This button has been added */}
+              <button 
+                className="form-button" 
+                style={{marginTop: '15px', width: 'auto', padding: '10px 15px'}}
+                onClick={() => alert(`Connect with ${session.userName} by emailing: ${session.userEmail}`)}
+              >
+                Connect
+              </button>
+            </div>
           ))
         ) : (
-          <p>No users found. Try a different search or invite your friends!</p>
+          <p>No study sessions found. Try creating one!</p>
         )}
       </div>
     </div>

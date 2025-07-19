@@ -76,6 +76,7 @@ const Profile = ({ onProfileCreate }) => {
         >
           <option value="Weekdays">Weekdays</option>
           <option value="Weekends">Weekends</option>
+          <option value="Morning">Morning</option>
           <option value="Evenings">Evenings</option>
           <option value="Flexible">Flexible</option>
         </select>

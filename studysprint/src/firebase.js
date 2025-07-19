@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+// Your web app's Firebase configuration is now read from the .env file
 const firebaseConfig = {
   apiKey:  "AIzaSyBjGXRJEybXWz36j5qEkrVHq5ASbWVov5Q",
   authDomain: "studysprint-2ed69.firebaseapp.com",

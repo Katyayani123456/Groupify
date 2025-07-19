@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// Import the new components from react-router-dom
+import { Routes, Route } from 'react-router-dom';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -13,8 +15,6 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileExists, setProfileExists] = useState(false);
-
-  // New state to manage which auth screen to show: 'landing', 'login', or 'signup'
   const [authView, setAuthView] = useState('landing');
 
   useEffect(() => {
@@ -51,11 +51,20 @@ function App() {
 
   return (
     <div className="App">
-      {user ? (
-        profileExists ? <Dashboard /> : <Profile onProfileCreate={handleProfileCreated} />
-      ) : (
-        renderAuthView()
-      )}
+      {/* All page content is now managed by Routes */}
+      <Routes>
+        {/* This Route handles your existing logic for the main page */}
+        <Route path="/" element={
+          user ? (
+            profileExists ? <Dashboard /> : <Profile onProfileCreate={handleProfileCreated} />
+          ) : (
+            renderAuthView()
+          )
+        } />
+
+        {/* We will add routes for new pages here later */}
+        {/* e.g., <Route path="/user/:userId" element={<SomeComponent />} /> */}
+      </Routes>
     </div>
   );
 }

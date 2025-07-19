@@ -188,3 +188,70 @@ input {
 .loading-screen {
     text-align: center;
 }
+/* --- New Profile & Dashboard Styles --- */
+
+/* Style for the dropdown in the profile form */
+select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #E0E0E0;
+  box-sizing: border-box;
+  font-family: 'Chakra Petch', sans-serif;
+  cursor: pointer;
+}
+
+/* Style for the label above the dropdown */
+.profile-container label {
+    display: block;
+    text-align: left;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* Styles for the dashboard search bar */
+.search-container {
+  margin: 20px 0 30px 0;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  background-color: #1f1f1f;
+  border: 1px solid #444;
+}
+
+/* Styles for the clickable user cards */
+.user-card-link {
+  text-decoration: none; /* Removes underline from links */
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.user-card-link:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(199, 57, 243, 0.2);
+}
+
+/* Make the dashboard scrollable if content overflows */
+.dashboard-container {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+/* Tweak user card for better layout */
+.user-card {
+    padding: 20px;
+}
+
+.user-card p {
+    margin: 8px 0;
+    line-height: 1.5;
+    word-break: break-word;
+}

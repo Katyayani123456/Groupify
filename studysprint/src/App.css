@@ -717,3 +717,86 @@ input, select, textarea {
     margin-bottom: 10px;
     border-left: 3px solid #C739F3;
 }
+/* --- Badges Styles --- */
+.badges-section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 20px;
+}
+
+.badges-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.badge {
+  background-color: #333;
+  color: #E0E0E0;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid #C739F3;
+}
+/* --- Group Page & Goal Planner Styles --- */
+.group-page-container {
+  display: flex;
+  height: calc(100vh - 70px); /* Full height minus header */
+  width: 100%;
+}
+
+.goal-planner-container {
+  width: 300px;
+  background-color: #1f1f1f;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #333;
+}
+
+.goal-planner-container h3 {
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.goal-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.goal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.goal-item.completed span {
+    text-decoration: line-through;
+    color: #666;
+}
+
+.add-goal-form {
+  display: flex;
+  margin-top: 10px;
+}
+
+.add-goal-form input {
+  flex-grow: 1;
+  margin: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.add-goal-form .add-button {
+  width: 50px;
+  border-radius: 0 4px 4px 0;
+  padding: 0;
+}
+
+/* Adjust Chat container to fit next to planner */
+.chat-container {
+    flex-grow: 1;
+    height: 100%;
+}

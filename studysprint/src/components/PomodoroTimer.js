@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs } from 'firebase/firestore';
+import { checkAndAwardBadges } from '../utils/gamification'; // Import badge logic
 
 const PomodoroTimer = () => {
   const workTime = 25 * 60; // 25 minutes
@@ -13,25 +14,29 @@ const PomodoroTimer = () => {
   useEffect(() => {
     let interval = null;
     if (isActive && time > 0) {
-      interval = setInterval(() => {
-        setTime(time - 1);
-      }, 1000);
+      interval = setInterval(() => setTime(time - 1), 1000);
     } else if (time === 0) {
       if (isWorkSession) {
-        // --- This is the new logic ---
-        // Save the completed session to Firestore
-        const saveProgress = async () => {
+        const saveAndCheckBadges = async () => {
           const user = auth.currentUser;
           if (user) {
+            // Save the session
             const historyRef = collection(db, 'users', user.uid, 'studyHistory');
             await addDoc(historyRef, {
               completedAt: serverTimestamp(),
-              duration: workTime / 60, // Store duration in minutes
+              duration: workTime / 60,
             });
+
+            // --- New Logic ---
+            // Fetch the updated history to check for badges
+            const historySnapshot = await getDocs(historyRef);
+            const fullHistory = historySnapshot.docs.map(doc => doc.data());
+            const userProfile = { uid: user.uid, badges: (await getDocs(collection(db, 'users'))).docs.find(doc => doc.id === user.uid)?.data()?.badges || [] };
+            checkAndAwardBadges(userProfile, fullHistory);
           }
         };
-        saveProgress();
-        // --- End of new logic ---
+        saveAndCheckBadges();
+        // --- End of New Logic ---
 
         alert("Time for a break!");
         setTime(breakTime);
@@ -46,6 +51,7 @@ const PomodoroTimer = () => {
     return () => clearInterval(interval);
   }, [isActive, time, isWorkSession, workTime, breakTime]);
 
+  // ... (rest of the component is the same)
   const toggleTimer = () => setIsActive(!isActive);
   const resetTimer = () => {
     setIsActive(false);

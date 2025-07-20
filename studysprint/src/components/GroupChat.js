@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const GroupChat = () => {
   const { groupId } = useParams();
@@ -14,9 +15,9 @@ const GroupChat = () => {
   const [notes, setNotes] = useState('');
   const [files, setFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSummarizing, setIsSummarizing] = useState(false);
   const dummy = useRef();
   
-  // Note-saving logic
   const saveNotes = useRef(debounce(async (newNotes) => {
     if (groupId) {
       const groupDocRef = doc(db, 'groups', groupId);
@@ -66,6 +67,27 @@ const GroupChat = () => {
     saveNotes(e.target.value);
   };
   
+  const handleSummarizeNotes = async () => {
+    if (!notes) {
+      alert("There are no notes to summarize!");
+      return;
+    }
+    setIsSummarizing(true);
+    try {
+      const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+      const prompt = `Summarize the following study notes in a few bullet points: \n\n${notes}`;
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const summary = response.text();
+      alert(`AI Summary:\n\n${summary}`);
+    } catch (error) {
+      console.error("Error summarizing notes:", error);
+      alert("Sorry, the AI summary could not be generated at this time.");
+    }
+    setIsSummarizing(false);
+  };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -115,7 +137,6 @@ const GroupChat = () => {
     await updateDoc(groupDocRef, { goals: updatedGoals });
   };
   
-  // Debounce utility function
   function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -154,6 +175,9 @@ const GroupChat = () => {
             onChange={handleNotesChange}
             placeholder="Type your shared notes here..."
           />
+          <button onClick={handleSummarizeNotes} className="summarize-button" disabled={isSummarizing}>
+            {isSummarizing ? 'Summarizing...' : '✨ Summarize with AI'}
+          </button>
         </div>
         <div className="file-sharing-container">
           <h3>Shared Files</h3>

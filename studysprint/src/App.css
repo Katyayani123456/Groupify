@@ -857,3 +857,25 @@ input, select, textarea {
     opacity: 0.5;
     cursor: not-allowed;
 }
+/* --- AI Summarize Button Style --- */
+.summarize-button {
+  background: linear-gradient(90deg, #C739F3, #007bff);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+
+.summarize-button:hover {
+  opacity: 0.9;
+}
+
+.summarize-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

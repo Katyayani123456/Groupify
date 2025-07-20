@@ -13,7 +13,8 @@ import UserProfile from './components/UserProfile';
 import EditProfile from './components/EditProfile';
 import VideoCall from './components/VideoCall';
 import GroupChat from './components/GroupChat';
-import Footer from './components/Footer'; // 1. Import the Footer component
+import Footer from './components/Footer';
+import ProgressDashboard from './components/ProgressDashboard'; // 1. Import the new component
 import './App.css'; 
 
 function App() {
@@ -55,7 +56,6 @@ function App() {
   
   if (loading) return <div className="loading-screen"><h1>Loading...</h1></div>;
 
-  // Modified this block to include the Footer
   if (!user) {
     return (
       <>
@@ -66,17 +66,16 @@ function App() {
             default: return <Landing onGoToLogin={() => setAuthView('login')} onGoToSignup={() => setAuthView('signup')} />;
           }
         })()}
-        <Footer /> {/* Footer for landing, login, and signup pages */}
+        <Footer />
       </>
     );
   }
   
-  // Modified this block to include the Footer
   if (!userProfile) {
     return (
       <>
         <Profile onProfileCreate={handleProfileCreated} />
-        <Footer /> {/* Footer for the profile creation page */}
+        <Footer />
       </>
     );
   }
@@ -91,9 +90,11 @@ function App() {
           <Route path="/settings" element={<EditProfile />} />
           <Route path="/group/:groupId/call" element={<VideoCall />} />
           <Route path="/group/:groupId/chat" element={<GroupChat />} />
+          {/* 2. Add the route for the progress page */}
+          <Route path="/progress" element={<ProgressDashboard />} />
         </Routes>
       </main>
-      <Footer /> {/* Footer for authenticated user's main app */}
+      <Footer />
     </>
   );
 }

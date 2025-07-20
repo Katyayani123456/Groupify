@@ -17,6 +17,8 @@ const Header = ({ userProfile }) => {
             // --- Logged-in user links ---
             <>
               <Link to="/" className="nav-link">Find Sessions</Link>
+              {/* This new link has been added */}
+              <Link to="/progress" className="nav-link">My Progress</Link> 
               <Link to="/settings">
                 <ProfileIcon userName={userProfile.name} />
               </Link>

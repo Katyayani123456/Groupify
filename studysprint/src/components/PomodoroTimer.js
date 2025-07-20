@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { db, auth } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const PomodoroTimer = () => {
   const workTime = 25 * 60; // 25 minutes
@@ -16,6 +18,21 @@ const PomodoroTimer = () => {
       }, 1000);
     } else if (time === 0) {
       if (isWorkSession) {
+        // --- This is the new logic ---
+        // Save the completed session to Firestore
+        const saveProgress = async () => {
+          const user = auth.currentUser;
+          if (user) {
+            const historyRef = collection(db, 'users', user.uid, 'studyHistory');
+            await addDoc(historyRef, {
+              completedAt: serverTimestamp(),
+              duration: workTime / 60, // Store duration in minutes
+            });
+          }
+        };
+        saveProgress();
+        // --- End of new logic ---
+
         alert("Time for a break!");
         setTime(breakTime);
         setIsWorkSession(false);
@@ -29,10 +46,7 @@ const PomodoroTimer = () => {
     return () => clearInterval(interval);
   }, [isActive, time, isWorkSession, workTime, breakTime]);
 
-  const toggleTimer = () => {
-    setIsActive(!isActive);
-  };
-
+  const toggleTimer = () => setIsActive(!isActive);
   const resetTimer = () => {
     setIsActive(false);
     setIsWorkSession(true);

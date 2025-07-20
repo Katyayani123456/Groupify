@@ -800,3 +800,60 @@ input, select, textarea {
     flex-grow: 1;
     height: 100%;
 }
+/* --- File Sharing Styles --- */
+.file-sharing-container {
+  border-top: 1px solid #444;
+  padding: 20px;
+}
+
+.file-sharing-container h3 {
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.file-item {
+  color: #C739F3;
+  text-decoration: none;
+  background-color: #0D0D0D;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-item:hover {
+  text-decoration: underline;
+}
+
+.upload-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: 1px solid #C739F3;
+  color: #C739F3;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.upload-button:hover {
+  background-color: rgba(199, 57, 243, 0.2);
+}
+
+.upload-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -33,13 +33,14 @@ const HomeDashboard = () => {
         <h2>Welcome back, {userName}!</h2>
         <p>What would you like to do today?</p>
       </div>
-
+      
       <div className="dashboard-actions">
         <Link to="/find" className="action-card">
           <h3>Find a Study Session</h3>
           <p>Browse sessions hosted by other students.</p>
         </Link>
-        <Link to="/settings" className="action-card">
+        {/* This link has been corrected to point to /sessions */}
+        <Link to="/sessions" className="action-card">
           <h3>Manage My Sessions</h3>
           <p>Create, edit, or delete your study sessions.</p>
         </Link>

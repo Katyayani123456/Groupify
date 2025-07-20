@@ -1,64 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { db, auth } from '../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore'; // 'updateDoc' has been removed
+import { doc, setDoc } from 'firebase/firestore';
 
 const Profile = ({ onProfileCreate }) => {
-  const [profileData, setProfileData] = useState({ name: '', major: '' });
-  const [isNewUser, setIsNewUser] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState({
+    name: '',
+    major: '',
+    availability: 'Weekdays',
+    courses: '',
+    studyGoal: '',
+    contact: ''
+  });
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const user = auth.currentUser;
-      if (user) {
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    
+    // Check for required fields
+    if (!profileData.name || !profileData.major || !profileData.courses) {
+        setError('Name, Major, and Courses are required.');
+        return;
+    }
+
+    const user = auth.currentUser;
+    if (user) {
+      try {
         const userDocRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setProfileData({ name: data.name || '', major: data.major || '' });
-          setIsNewUser(false);
-        } else {
-          setIsNewUser(true);
-        }
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          email: user.email,
+          ...profileData,
+          contact: profileData.contact || user.email, // Default to email
+        }, { merge: true });
+        
+        onProfileCreate();
+      } catch (err) {
+        setError('Failed to save profile. Please try again.');
+        console.error(err);
       }
-      setLoading(false);
-    };
-    fetchProfile();
-  }, []);
-
+    }
+  };
+  
   const handleChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
 
-  const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    const user = auth.currentUser;
-    if (user) {
-      const userDocRef = doc(db, 'users', user.uid);
-      await setDoc(userDocRef, {
-        ...profileData,
-        uid: user.uid,
-        email: user.email,
-      }, { merge: true });
-      
-      alert("Profile details updated!");
-      if (isNewUser && onProfileCreate) {
-        onProfileCreate();
-      }
-    }
-  };
-
-  if (loading) return <div className="loading-screen"><h1>Loading...</h1></div>;
-
   return (
     <div className="profile-container">
-      <h2>{isNewUser ? 'Create Your Study Profile' : 'My Profile'}</h2>
-      <form onSubmit={handleSaveChanges}>
+      <h2>Create Your Study Profile</h2>
+      <p>This helps others find you!</p>
+      <form onSubmit={handleProfileSubmit}>
         <label>Your Name</label>
         <input type="text" name="name" value={profileData.name} onChange={handleChange} required />
         <label>Your Major</label>
-        <input type="text" name="major" value={profileData.major} onChange={handleChange} placeholder="e.g., Computer Science" required />
-        <button type="submit" className="form-button">Save Changes</button>
+        <input type="text" name="major" value={profileData.major} onChange={handleChange} required />
+        <label>Courses/Subjects</label>
+        <input type="text" name="courses" value={profileData.courses} onChange={handleChange} placeholder="e.g., Calculus II, CHEM 101" required />
+        <label>Your general availability</label>
+        <select name="availability" value={profileData.availability} onChange={handleChange}>
+            <option value="Weekdays">Weekdays</option>
+            <option value="Weekends">Weekends</option>
+            <option value="Morning">Morning</option>
+            <option value="Evening">Evening</option>
+            <option value="Flexible">Flexible</option>
+        </select>
+        <label>Study Goal</label>
+        <textarea name="studyGoal" value={profileData.studyGoal} onChange={handleChange} placeholder="e.g., Prepare for finals" />
+        <label>Contact to Connect</label>
+        <input type="text" name="contact" value={profileData.contact} onChange={handleChange} placeholder="e.g., Discord: user#1234 (optional)"/>
+        
+        <button type="submit" className="form-button">Save Profile</button>
+        {error && <p className="error-message" style={{color: '#d9534f'}}>{error}</p>}
       </form>
     </div>
   );

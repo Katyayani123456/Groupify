@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
 import { collection, query, getDocs, orderBy } from 'firebase/firestore';
 import Spinner from './Spinner';
+import { calculateStreak } from '../utils/gamification'; // 1. Import the new function
 
 const ProgressDashboard = () => {
   const [studyHistory, setStudyHistory] = useState([]);
@@ -23,7 +24,8 @@ const ProgressDashboard = () => {
   }, []);
 
   const totalSessions = studyHistory.length;
-  const totalStudyTime = totalSessions * 25; // Each session is 25 minutes
+  const totalStudyTime = totalSessions * 25;
+  const currentStreak = calculateStreak(studyHistory); // 2. Calculate the streak
 
   if (loading) return <Spinner />;
 
@@ -41,7 +43,8 @@ const ProgressDashboard = () => {
         </div>
         <div className="stat-card">
           <h3>Study Streak</h3>
-          <p className="stat-number">Coming Soon</p>
+          {/* 3. Display the calculated streak */}
+          <p className="stat-number">{currentStreak} <span className="stat-unit">days</span></p>
         </div>
       </div>
 

@@ -3,7 +3,15 @@ import { db, auth } from '../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 const MyProfile = () => {
-  const [profileData, setProfileData] = useState({ name: '', major: '' });
+  // 1. Add new fields to the state
+  const [profileData, setProfileData] = useState({
+    name: '',
+    major: '',
+    availability: 'Weekdays',
+    courses: '',
+    studyGoal: '',
+    contact: ''
+  });
   const [badges, setBadges] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +23,15 @@ const MyProfile = () => {
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setProfileData({ name: data.name || '', major: data.major || '' });
+          // 2. Fetch the new data from Firestore
+          setProfileData({
+            name: data.name || '',
+            major: data.major || '',
+            availability: data.availability || 'Weekdays',
+            courses: data.courses || '',
+            studyGoal: data.studyGoal || '',
+            contact: data.contact || user.email
+          });
           setBadges(data.badges || []);
         }
       }
@@ -32,10 +48,8 @@ const MyProfile = () => {
     const user = auth.currentUser;
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
-      await updateDoc(userDocRef, {
-        name: profileData.name,
-        major: profileData.major,
-      });
+      // 3. Save all the new fields
+      await updateDoc(userDocRef, profileData);
       alert("Profile details updated!");
     }
   };
@@ -62,6 +76,24 @@ const MyProfile = () => {
         <input type="text" name="name" value={profileData.name} onChange={handleChange} />
         <label>Your Major</label>
         <input type="text" name="major" value={profileData.major} onChange={handleChange} />
+        
+        {/* 4. Add the new input fields to the form */}
+        <label>Courses/Subjects</label>
+        <input type="text" name="courses" value={profileData.courses} onChange={handleChange} placeholder="e.g., Calculus II, CHEM 101" />
+        
+        <label>Your general availability</label>
+        <select name="availability" value={profileData.availability} onChange={handleChange}>
+            <option value="Weekdays">Weekdays</option>
+            <option value="Weekends">Weekends</option>
+            <option value="Evenings">Evenings</option>
+            <option value="Flexible">Flexible</option>
+        </select>
+        
+        <label>Study Goal</label>
+        <textarea name="studyGoal" value={profileData.studyGoal} onChange={handleChange} placeholder="e.g., Prepare for finals" />
+        
+        <label>Contact to Connect</label>
+        <input type="text" name="contact" value={profileData.contact} onChange={handleChange} placeholder="e.g., Discord: user#1234 or your email"/>
       </div>
 
       <button onClick={handleSaveChanges} className="form-button">Save Changes</button>

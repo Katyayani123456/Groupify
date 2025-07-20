@@ -738,11 +738,20 @@ input, select, textarea {
   border: 1px solid #C739F3;
 }
 /* --- Group Page & Goal Planner Styles --- */
+.group-chat-page-wrapper {
+    /* Adjusts height for header (70px) and footer/padding (120px) */
+    height: calc(100vh - 190px); 
+    padding-top: 30px;
+}
 .group-page-container {
   display: flex;
-  height: calc(100vh - 70px); /* Full height minus header */
+  height: 100%; /* Take up full height of the wrapper */
   width: 100%;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  overflow: hidden;
 }
+
 
 .goal-planner-container {
   width: 300px;

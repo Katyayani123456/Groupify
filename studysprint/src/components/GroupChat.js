@@ -5,6 +5,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { debounce } from 'lodash';
+import FocusMusic from './FocusMusic';
 
 const GroupChat = () => {
     const { groupId } = useParams();
@@ -38,7 +39,7 @@ const GroupChat = () => {
     useEffect(() => {
         if (!groupId) return;
         const groupDocRef = doc(db, 'groups', groupId);
-        
+
         const unsubMessages = onSnapshot(query(collection(groupDocRef, 'messages'), orderBy('createdAt')), snapshot => {
             setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         });
@@ -82,15 +83,14 @@ const GroupChat = () => {
         });
         setNewMessage('');
     };
-
+    
     const handleNotesChange = e => { setNotes(e.target.value); saveNotes(e.target.value); };
     
     const handleAddGoal = async () => {
         if (newGoal.trim() === '') return;
         const groupDocRef = doc(db, 'groups', groupId);
         const newGoalObject = { id: Date.now().toString(), text: newGoal, completed: false };
-        const updatedGoals = [...goals, newGoalObject];
-        await updateDoc(groupDocRef, { goals: updatedGoals });
+        await updateDoc(groupDocRef, { goals: [...goals, newGoalObject] });
         setNewGoal('');
     };
     
@@ -163,6 +163,7 @@ const GroupChat = () => {
                     <button onClick={() => setActiveTab('notes')} className={activeTab === 'notes' ? 'active' : ''}>Notes</button>
                     <button onClick={() => setActiveTab('files')} className={activeTab === 'files' ? 'active' : ''}>Files</button>
                     <button onClick={() => setActiveTab('flashcards')} className={activeTab === 'flashcards' ? 'active' : ''}>Flashcards</button>
+                    <button onClick={() => setActiveTab('music')} className={activeTab === 'music' ? 'active' : ''}>Music</button>
                 </div>
 
                 {activeTab === 'goals' && (
@@ -225,6 +226,9 @@ const GroupChat = () => {
                             <button onClick={handleAddCard} className="add-button">Add Card</button>
                         </div>
                     </div>
+                )}
+                {activeTab === 'music' && (
+                    <FocusMusic />
                 )}
             </div>
             <div className="chat-container">

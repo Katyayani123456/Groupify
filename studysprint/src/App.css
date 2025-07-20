@@ -1182,3 +1182,68 @@ input, select, textarea {
     margin: 0;
     width: auto;
 }
+/* --- Focus Music Styles --- */
+.focus-music-container {
+  padding: 20px;
+}
+.focus-music-container h3 {
+  text-align: center;
+  margin: 0 0 20px 0;
+}
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.track-button {
+  background-color: var(--background-color);
+  border: 1px solid var(--surface-border);
+  color: var(--text-color);
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+.track-button.playing {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+}
+.now-playing {
+    margin-top: 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
+.stop-button {
+    background: none;
+    border: 1px solid var(--danger-color);
+    color: var(--danger-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+/* --- YouTube Player Styles --- */
+.youtube-player-container {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.player-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #000;
+}
+.control-button {
+    background: none;
+    border: 1px solid var(--surface-border);
+    color: var(--text-color);
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.control-button.close {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}

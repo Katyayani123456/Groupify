@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { getDatabase, ref, set, onDisconnect } from "firebase/database"; // Import Realtime DB functions
 
 import Header from './components/Header';
 import Landing from './components/Landing';
@@ -14,7 +15,7 @@ import EditProfile from './components/EditProfile';
 import VideoCall from './components/VideoCall';
 import GroupChat from './components/GroupChat';
 import Footer from './components/Footer';
-import ProgressDashboard from './components/ProgressDashboard'; // 1. Import the new component
+import ProgressDashboard from './components/ProgressDashboard';
 import './App.css'; 
 
 function App() {
@@ -35,6 +36,14 @@ function App() {
         } else {
           setUserProfile(null); 
         }
+
+        // --- New Presence Logic ---
+        const rtdb = getDatabase();
+        const myStatusRef = ref(rtdb, 'status/' + currentUser.uid);
+        set(myStatusRef, { isOnline: true });
+        onDisconnect(myStatusRef).set({ isOnline: false });
+        // --- End of New Logic ---
+
       } else {
         setUser(null);
         setUserProfile(null);
@@ -90,7 +99,6 @@ function App() {
           <Route path="/settings" element={<EditProfile />} />
           <Route path="/group/:groupId/call" element={<VideoCall />} />
           <Route path="/group/:groupId/chat" element={<GroupChat />} />
-          {/* 2. Add the route for the progress page */}
           <Route path="/progress" element={<ProgressDashboard />} />
         </Routes>
       </main>

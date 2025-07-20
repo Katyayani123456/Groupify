@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { getDatabase, ref, onValue } from "firebase/database"; // Import Realtime DB functions
 import ConnectModal from './ConnectModal';
-import PomodoroTimer from './PomodoroTimer'; // 1. Re-import the timer
+import PomodoroTimer from './PomodoroTimer';
 
 const Dashboard = () => {
   const [allSessions, setAllSessions] = useState([]);
@@ -11,6 +12,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSession, setSelectedSession] = useState(null);
+  const [onlineStatus, setOnlineStatus] = useState({}); // New state for online status
 
   useEffect(() => {
     const fetchAllSessions = async () => {
@@ -31,6 +33,15 @@ const Dashboard = () => {
       setLoading(false);
     };
     fetchAllSessions();
+
+    // --- New Logic to Fetch Online Status ---
+    const rtdb = getDatabase();
+    const statusRef = ref(rtdb, 'status/');
+    const unsubscribe = onValue(statusRef, (snapshot) => {
+      setOnlineStatus(snapshot.val() || {});
+    });
+    return () => unsubscribe(); // Cleanup the listener
+    // --- End of New Logic ---
   }, []);
 
   const handleConnectClick = (session) => {
@@ -53,9 +64,7 @@ const Dashboard = () => {
     <>
       <div className="dashboard-container">
         <h2>Find a Partner</h2>
-
-        <PomodoroTimer /> {/* 2. Add the timer back here */}
-        
+        <PomodoroTimer />
         <div className="search-container">
           <input type="text" placeholder="Search for a session..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
@@ -66,7 +75,11 @@ const Dashboard = () => {
                 <h4>{session.title}</h4>
                 <p><strong>Goal:</strong> {session.goal}</p>
                 <p><strong>Availability:</strong> {session.availability}</p>
-                <p>Hosted by: <Link to={`/user/${session.userId}`}>{session.userName}</Link></p>
+                <p className="hosted-by">
+                  Hosted by: <Link to={`/user/${session.userId}`}>{session.userName}</Link>
+                  {/* Display online indicator */}
+                  {onlineStatus[session.userId]?.isOnline && <span className="online-indicator"></span>}
+                </p>
                 <button 
                   className="form-button" 
                   style={{marginTop: '15px', width: 'auto', padding: '10px 15px'}}

@@ -13,10 +13,24 @@ const Header = ({ userProfile }) => {
       <div className="header-content">
         <Link to="/" className="header-logo">GROUPIFY</Link>
         <nav className="header-nav">
-          <Link to="/settings">
-            <ProfileIcon userName={userProfile.name} />
-          </Link>
-          <button onClick={handleLogout} className="logout-button">Logout</button>
+          {userProfile ? (
+            // --- Logged-in user links ---
+            <>
+              <Link to="/" className="nav-link">Find Sessions</Link>
+              <Link to="/settings">
+                <ProfileIcon userName={userProfile.name} />
+              </Link>
+              <button onClick={handleLogout} className="logout-button">Logout</button>
+            </>
+          ) : (
+            // --- Logged-out user links ---
+            <>
+              <a href="/#about" className="nav-link">About</a>
+              <a href="/#contact" className="nav-link">Contact</a>
+              <Link to="/login" className="nav-link">Login</Link>
+              <Link to="/signup" className="nav-link signup-button">Sign Up</Link>
+            </>
+          )}
         </nav>
       </div>
     </header>

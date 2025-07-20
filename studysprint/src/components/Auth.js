@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
-const Auth = ({ isLoginView, onGoBack }) => {
+// 1. Add onGoBack to the destructured props
+const Auth = ({ isLoginView, onGoBack }) => { 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -16,6 +19,7 @@ const Auth = ({ isLoginView, onGoBack }) => {
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
       }
+      navigate('/'); // Redirect to the main page on successful login/signup
     } catch (err) {
       setError('Authentication failed. Please check your credentials.');
       console.error(err);
@@ -24,7 +28,11 @@ const Auth = ({ isLoginView, onGoBack }) => {
 
   return (
     <div className="auth-page-container">
-      <button className="back-button" onClick={onGoBack}>&lt; Back</button>
+      {/* 2. Add the back button */}
+      <button className="back-button" onClick={onGoBack}>
+        &larr; Back
+      </button>
+      
       <div className="auth-container">
         <h2>{isLoginView ? 'LOGIN' : 'SIGN UP'}</h2>
         <form onSubmit={handleAuth}>
@@ -44,7 +52,7 @@ const Auth = ({ isLoginView, onGoBack }) => {
           />
           <button type="submit" className="form-button">{isLoginView ? 'LOGIN' : 'SIGN UP'}</button>
         </form>
-        {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message" style={{color: '#d9534f', marginTop: '15px'}}>{error}</p>}
       </div>
     </div>
   );

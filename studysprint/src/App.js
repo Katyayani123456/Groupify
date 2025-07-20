@@ -12,7 +12,8 @@ import Profile from './components/Profile';
 import UserProfile from './components/UserProfile';
 import EditProfile from './components/EditProfile';
 import VideoCall from './components/VideoCall';
-import GroupChat from './components/GroupChat'; // 1. Import the new component
+import GroupChat from './components/GroupChat';
+import Footer from './components/Footer'; // 1. Import the Footer component
 import './App.css'; 
 
 function App() {
@@ -54,16 +55,30 @@ function App() {
   
   if (loading) return <div className="loading-screen"><h1>Loading...</h1></div>;
 
+  // Modified this block to include the Footer
   if (!user) {
-    switch (authView) {
-      case 'login': return <Auth isLoginView={true} onGoBack={() => setAuthView('landing')} />;
-      case 'signup': return <Auth isLoginView={false} onGoBack={() => setAuthView('landing')} />;
-      default: return <Landing onGoToLogin={() => setAuthView('login')} onGoToSignup={() => setAuthView('signup')} />;
-    }
+    return (
+      <>
+        {(() => {
+          switch (authView) {
+            case 'login': return <Auth isLoginView={true} onGoBack={() => setAuthView('landing')} />;
+            case 'signup': return <Auth isLoginView={false} onGoBack={() => setAuthView('landing')} />;
+            default: return <Landing onGoToLogin={() => setAuthView('login')} onGoToSignup={() => setAuthView('signup')} />;
+          }
+        })()}
+        <Footer /> {/* Footer for landing, login, and signup pages */}
+      </>
+    );
   }
   
+  // Modified this block to include the Footer
   if (!userProfile) {
-    return <Profile onProfileCreate={handleProfileCreated} />;
+    return (
+      <>
+        <Profile onProfileCreate={handleProfileCreated} />
+        <Footer /> {/* Footer for the profile creation page */}
+      </>
+    );
   }
 
   return (
@@ -75,10 +90,10 @@ function App() {
           <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/settings" element={<EditProfile />} />
           <Route path="/group/:groupId/call" element={<VideoCall />} />
-          {/* 2. Add the route for the chat page */}
           <Route path="/group/:groupId/chat" element={<GroupChat />} />
         </Routes>
       </main>
+      <Footer /> {/* Footer for authenticated user's main app */}
     </>
   );
 }

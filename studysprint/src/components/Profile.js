@@ -1,94 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore'; // 'updateDoc' has been removed
 
 const Profile = ({ onProfileCreate }) => {
-  const [name, setName] = useState('');
-  const [major, setMajor] = useState(''); // New state for Major
-  const [subjects, setSubjects] = useState('');
-  const [availability, setAvailability] = useState('Weekdays'); // New state for Availability
-  const [goals, setGoals] = useState('');
-  const [error, setError] = useState('');
+  const [profileData, setProfileData] = useState({ name: '', major: '' });
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleProfileSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    if (!name || !major || !subjects || !goals) {
-      setError('All fields are required.');
-      return;
-    }
-
-    try {
+  useEffect(() => {
+    const fetchProfile = async () => {
       const user = auth.currentUser;
       if (user) {
-        // Update the document to include the new fields
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          name: name,
-          email: user.email,
-          major: major, // Save major
-          subjects: subjects.split(',').map(s => s.trim()),
-          availability: availability, // Save availability
-          goals: goals,
-          createdAt: new Date(), // Good practice to store creation date
-        });
-        onProfileCreate(); 
+        const userDocRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfileData({ name: data.name || '', major: data.major || '' });
+          setIsNewUser(false);
+        } else {
+          setIsNewUser(true);
+        }
       }
-    } catch (err) {
-      setError('Failed to save profile. Please try again.');
-      console.error(err);
+      setLoading(false);
+    };
+    fetchProfile();
+  }, []);
+
+  const handleChange = (e) => {
+    setProfileData({ ...profileData, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (user) {
+      const userDocRef = doc(db, 'users', user.uid);
+      await setDoc(userDocRef, {
+        ...profileData,
+        uid: user.uid,
+        email: user.email,
+      }, { merge: true });
+      
+      alert("Profile details updated!");
+      if (isNewUser && onProfileCreate) {
+        onProfileCreate();
+      }
     }
   };
 
+  if (loading) return <div className="loading-screen"><h1>Loading...</h1></div>;
+
   return (
     <div className="profile-container">
-      <h2>Create Your Study Profile</h2>
-      <p>This helps others find you!</p>
-      <form onSubmit={handleProfileSubmit}>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your Name"
-          required
-        />
-        {/* New Input for Major */}
-        <input
-          type="text"
-          value={major}
-          onChange={(e) => setMajor(e.target.value)}
-          placeholder="Your Major (e.g., Computer Science)"
-          required
-        />
-        <input
-          type="text"
-          value={subjects}
-          onChange={(e) => setSubjects(e.target.value)}
-          placeholder="Courses / Subjects (comma-separated)"
-          required
-        />
-        {/* New Dropdown for Availability */}
-        <label htmlFor="availability">Your general availability:</label>
-        <select 
-          id="availability" 
-          value={availability} 
-          onChange={(e) => setAvailability(e.target.value)}
-        >
-          <option value="Weekdays">Weekdays</option>
-          <option value="Weekends">Weekends</option>
-          <option value="Morning">Morning</option>
-          <option value="Evenings">Evenings</option>
-          <option value="Flexible">Flexible</option>
-        </select>
-        <textarea
-          value={goals}
-          onChange={(e) => setGoals(e.target.value)}
-          placeholder="What are your study goals?"
-          required
-        />
-        <button type="submit" className="form-button">Save Profile</button>
+      <h2>{isNewUser ? 'Create Your Study Profile' : 'My Profile'}</h2>
+      <form onSubmit={handleSaveChanges}>
+        <label>Your Name</label>
+        <input type="text" name="name" value={profileData.name} onChange={handleChange} required />
+        <label>Your Major</label>
+        <input type="text" name="major" value={profileData.major} onChange={handleChange} placeholder="e.g., Computer Science" required />
+        <button type="submit" className="form-button">Save Changes</button>
       </form>
-      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

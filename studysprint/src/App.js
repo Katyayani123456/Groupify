@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { getDatabase, ref, set, onDisconnect } from "firebase/database"; // Import Realtime DB functions
+import { getDatabase, ref, set, onDisconnect } from "firebase/database";
 
 import Header from './components/Header';
 import Landing from './components/Landing';
@@ -16,6 +16,12 @@ import VideoCall from './components/VideoCall';
 import GroupChat from './components/GroupChat';
 import Footer from './components/Footer';
 import ProgressDashboard from './components/ProgressDashboard';
+import HomeDashboard from './components/HomeDashboard';
+import MyProfile from './components/MyProfile';
+// 1. Import the new forum components
+import ForumPage from './components/ForumPage';
+import PostDetail from './components/PostDetail';
+import CreatePost from './components/CreatePost';
 import './App.css'; 
 
 function App() {
@@ -37,12 +43,10 @@ function App() {
           setUserProfile(null); 
         }
 
-        // --- New Presence Logic ---
         const rtdb = getDatabase();
         const myStatusRef = ref(rtdb, 'status/' + currentUser.uid);
         set(myStatusRef, { isOnline: true });
         onDisconnect(myStatusRef).set({ isOnline: false });
-        // --- End of New Logic ---
 
       } else {
         setUser(null);
@@ -94,12 +98,18 @@ function App() {
       <Header userProfile={userProfile} />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<HomeDashboard />} />
+          <Route path="/find" element={<Dashboard />} />
+          <Route path="/profile" element={<MyProfile />} />
+          <Route path="/sessions" element={<EditProfile />} />
           <Route path="/user/:userId" element={<UserProfile />} />
-          <Route path="/settings" element={<EditProfile />} />
           <Route path="/group/:groupId/call" element={<VideoCall />} />
           <Route path="/group/:groupId/chat" element={<GroupChat />} />
           <Route path="/progress" element={<ProgressDashboard />} />
+          {/* 2. Add the new routes for the forum */}
+          <Route path="/forum" element={<ForumPage />} />
+          <Route path="/post/:postId" element={<PostDetail />} />
+          <Route path="/create-post" element={<CreatePost />} />
         </Routes>
       </main>
       <Footer />

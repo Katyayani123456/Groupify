@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase';
 import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import Spinner from './Spinner';
 
 const ProgressDashboard = () => {
   const [studyHistory, setStudyHistory] = useState([]);
@@ -24,7 +25,7 @@ const ProgressDashboard = () => {
   const totalSessions = studyHistory.length;
   const totalStudyTime = totalSessions * 25; // Each session is 25 minutes
 
-  if (loading) return <div className="loading-screen"><h1>Loading Your Progress...</h1></div>;
+  if (loading) return <Spinner />;
 
   return (
     <div className="progress-container">

@@ -1,19 +1,39 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { db, auth } from '../firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const ConnectModal = ({ session, onClose }) => {
   const navigate = useNavigate();
 
   if (!session) return null;
 
+  const createGroupAndNavigate = async (path) => {
+    const groupId = session.id;
+    const groupDocRef = doc(db, 'groups', groupId);
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+        alert("You must be logged in to connect.");
+        return;
+    }
+
+    // Create the group document in Firestore if it doesn't exist
+    await setDoc(groupDocRef, {
+      createdAt: serverTimestamp(),
+      groupName: session.title,
+      members: [session.userId, currentUser.uid]
+    }, { merge: true }); // Use merge to avoid overwriting existing goals or notes
+
+    navigate(path);
+  };
+
   const handleVideoCall = () => {
-    // We'll use the session's unique ID as the group/channel ID
-    navigate(`/group/${session.id}/call`);
+    createGroupAndNavigate(`/group/${session.id}/call`);
   };
 
   const handleChat = () => {
-    // This now navigates to the chat room for the specific session
-    navigate(`/group/${session.id}/chat`);
+    createGroupAndNavigate(`/group/${session.id}/chat`);
   };
 
   return (

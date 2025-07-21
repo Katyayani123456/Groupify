@@ -1,5 +1,5 @@
 Groupify - AI-Powered Study Groups
-Live Demo: https://[YOUR LIVE DEMO URL HERE]
+Live Demo: https://studysprint-2ed69.web.app
 
 🚀 The Problem
 Studying can be an isolating and inefficient process. Students often struggle to find compatible study partners who share their subjects, goals, and availability. Even when groups are formed, coordination is messy, focus is hard to maintain, and accountability often fades, especially for remote learners and those facing high-stakes exams. This leads to procrastination, ineffective study sessions, and a feeling of being left to struggle alone.
@@ -54,7 +54,7 @@ Styling: Custom CSS with a modern, responsive, and accessible design (including 
 ⚙️ Running the Project Locally
 Clone the repository:
 
-git clone https://github.com/[YOUR-USERNAME]/groupify.git
+git clone https://github.com/Katyayani123456/Groupify.git
 
 Navigate into the project directory:
 
